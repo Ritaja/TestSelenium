@@ -24,6 +24,10 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.Select; 
+
+import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
 
 import excelManipulations.ReaderImpl;
 
@@ -46,7 +50,7 @@ public class TC_pClass_NV_NA_ParameterTab {
 		
 		System.setProperty("webdriver.chrome.driver", "Lib/chromedriver.exe");
 		 driver = new ChromeDriver();
-		 driver.get("http://profectus/NanoSenchaTouch2.1.1%20(Sprint%2027%2004-03-14)/index-debug.html?demo=On,client=Desktop");
+		 driver.get("http://profectus/NanoSenchaTouch2.1.1%20(Sprint%2030%2012-04-14)/index-debug.html?demo=On&client=Desktop");
 		 driver.manage().timeouts().implicitlyWait(100000, TimeUnit.SECONDS);
 		 
 		 
@@ -68,11 +72,9 @@ public class TC_pClass_NV_NA_ParameterTab {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		
 		Thread.sleep(1000);
-		element1 = driver.findElement(By.xpath("//div[text()='NanoVolume']"));
-		element1.click();
-		Thread.sleep(1000);
-		element1 = driver.findElement(By.xpath("//div[text()='Nucleic Acids']"));
+		element1 = driver.findElement(By.xpath("//div[text()='Nucleic Acid']"));
 		element1.click();
 		Thread.sleep(1000);
 	}
@@ -89,8 +91,36 @@ public class TC_pClass_NV_NA_ParameterTab {
 
 	@Test
 	public void TC_pClass_NV_NA_dsDNA_parameters() throws InterruptedException, IOException {
-		element1 = driver.findElement(By.xpath("//div[text()='dsDNA']"));
-		element1.click();
+		Thread.sleep(1000);
+		try {
+            //trying to get the "select option"
+            //WebElement elementOfInterest = driver.findElement(By.xpath("//div[contains(@id,'ext-thumb-3')]"));
+			WebElement elementOfInterest = driver.findElement(By.xpath("//div[contains(@id,'ext-input-12')]"));
+            //this would select the option
+//			JavascriptLibrary javascript = new JavascriptLibrary();
+//            javascript.callEmbeddedSelenium(driver, "triggerMouseEventAt", elementOfInterest, "click", "0,0");
+			elementOfInterest.click();
+                        //driver.findElement(By.id("ext-element-629")).click();
+                        //System.out.println("Done!");
+             //Select dropdown = new Select(driver.findElement(By.xpath("//div[contains(@id,'ext-input-12')]"))); 
+			 
+            WebElement elementOfInterest1 = driver.findElement(By.xpath("//div[contains(@id,'ext-listitem-17')]"));
+            //actions sequence
+            Actions clickable = new Actions(driver);
+            clickable.click(elementOfInterest1).perform();;
+//            JavascriptLibrary javascript = new JavascriptLibrary();
+//            javascript.callEmbeddedSelenium(driver, "triggerMouseEventAt", elementOfInterest1, "click", elementOfInterest.getLocation().toString());
+            System.out.println("element: "+elementOfInterest1.isSelected());
+            Thread.sleep(1000);
+            //elementOfInterest1.click();
+            //Select dropdown = new Select(driver.findElement(By.xpath("//div[contains(@id,'ext-element-619')]")));
+            //dropdown.deselectAll();
+            
+            
+            
+        } catch (NoSuchElementException e) { 
+            System.out.println("jammed!!");
+        }
 		Thread.sleep(1000);
 		System.out.println(name.getMethodName());
 		
