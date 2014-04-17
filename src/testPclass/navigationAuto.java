@@ -25,7 +25,9 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import excelManipulations.ReaderImpl;
 
@@ -50,21 +52,31 @@ public class navigationAuto {
 	static WebDriver driver;
 	public WebElement element;
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static String selectType;
+	static String selectPhotometerType;
+	static String parsename;
+	
 	@Rule 
 	public TestName name = new TestName();
 	static String selectItem;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		  System.out.println("Please enter parameter to select: ");
+		  System.out.println("Please enter type of photometer to select: ");
+		  selectPhotometerType = br.readLine();
+		  System.out.println("Please enter type (eg: nucleic acid) to select: ");
+		  selectType = br.readLine();
+          System.out.println("Please enter parameter to select: ");
           selectItem = br.readLine();
+          parsename = "TC_"+selectPhotometerType+"_"+selectType+"_"+selectItem+"_"+"parameters";
+          System.out.println("Being parsed: "+parsename);
 		  System.setProperty("webdriver.chrome.driver", "Lib/chromedriver.exe");
           driver = new ChromeDriver();
           driver.get("http://profectus/NanoSenchaTouch2.1.1%20(Sprint%2030%2014-04-14)/index-debug.html?demo=On&client=Desktop");
-          driver.manage().timeouts().implicitlyWait(100000, TimeUnit.SECONDS);
-          
-           
-           WebElement element = driver.findElement(By.xpath("//div[text()='P-Class']"));
+          driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+          selectPhotometerType = "//div[text()='" + selectPhotometerType + "']";
+          WebElement element = driver.findElement(By.xpath(selectPhotometerType));
+           //WebElement element = driver.findElement(By.xpath("//div[text()='P-Class']"));
           //WebElement element = driver.findElement(By.xpath("//div[contains(@id,'ext-element-40')]"));
           element.click();
 	}
@@ -72,10 +84,10 @@ public class navigationAuto {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@AfterClass
+	/*@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		 driver.quit();
-	}
+	}*/
 
 	/**
 	 * @throws java.lang.Exception
@@ -83,8 +95,11 @@ public class navigationAuto {
 	@Before
 	public void setUp() throws Exception {
 		Thread.sleep(1000);
-        
-        WebElement elementbef = driver.findElement(By.xpath("//div[text()='Nucleic Acid']"));
+        System.out.println("setup called now"+driver.getWindowHandle());
+        selectType = "//div[text()='" + selectType + "']";
+        System.out.println("search element: "+selectType);
+        WebElement elementbef = driver.findElement(By.xpath(selectType));
+        //WebElement elementbef = driver.findElement(By.xpath("//div[text()='Nucleic Acid']"));
         elementbef.click();
 	}
 
@@ -101,12 +116,14 @@ public class navigationAuto {
 	@Test
 	public void test() throws InterruptedException, IOException {
 		Thread.sleep(1000);
-        
+		System.out.println("in test0");
           WebElement selectorElement = driver.findElement(By.xpath("//div[contains(@id,'ext-element-455')]"));
           selectorElement.click();
           selectItem = "//span[text()='" + selectItem + "']";
           System.out.println(selectItem);
+          Thread.sleep(1000);
           selectorElement  = driver.findElement(By.xpath(selectItem));
+          //selectorElement  = driver.findElement(By.xpath("//span[text()='ssDNA']"));
           selectorElement.click();
         try {
         
@@ -119,7 +136,8 @@ public class navigationAuto {
         System.out.println(name.getMethodName());
         
         ReaderImpl ex = new ReaderImpl("Parameters.xlsx");
-        ArrayList paramList = ex.getParams(name.getMethodName());
+        //ArrayList paramList = ex.getParams(name.getMethodName());
+        ArrayList paramList = ex.getParams(parsename);
         ListIterator li = paramList.listIterator();
         boolean finalassert = true;
         while(li.hasNext()){
@@ -137,6 +155,8 @@ public class navigationAuto {
                                                           System.out.println(str);
                                                         
                                                           finalassert = false  ; 
+                                                          System.out
+																.println("false: "+str);
                                                          
                                                           
                                           }
@@ -146,5 +166,7 @@ public class navigationAuto {
         System.out.println(finalassert);
         assertTrue(finalassert);
 	}
+	
+
 
 }
